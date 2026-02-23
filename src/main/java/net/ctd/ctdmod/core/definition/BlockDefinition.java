@@ -1,5 +1,7 @@
 package net.ctd.ctdmod.core.definition;
 
+import java.util.Objects;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -7,8 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
-
-import java.util.Objects;
 
 /**
  * Holds a registered block and its corresponding {@link BlockItem}, with a readable name and

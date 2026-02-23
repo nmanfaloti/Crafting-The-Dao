@@ -5,17 +5,18 @@ import java.util.List;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+
 import net.ctd.ctdmod.api.CTDCreativeTabIds;
 import net.ctd.ctdmod.core.definition.CTDBlocks;
 import net.ctd.ctdmod.core.definition.CTDItems;
 import net.ctd.ctdmod.core.definition.ItemDefinition;
 import net.ctd.ctdmod.items.CTDBaseItem;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
 
 /**
  * Registers and populates the mod's creative mode tabs (main tab and alchemy tab).

@@ -2,12 +2,13 @@ package net.ctd.ctdmod.core.definition;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Holds a registered item with a readable name and convenience methods for stacks and identity.
