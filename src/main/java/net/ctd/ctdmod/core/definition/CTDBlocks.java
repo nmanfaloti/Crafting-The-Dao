@@ -1,4 +1,4 @@
-package net.CTD.CTDmod.core.definition;
+package net.ctd.ctdmod.core.definition;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,13 +10,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
 
-import net.CTD.CTDmod.CTDMod;
-import net.CTD.CTDmod.api.CTDCreativeTabIds;
-import net.CTD.CTDmod.block.CTDBaseBlock;
-import net.CTD.CTDmod.block.CTDBaseBlockItem;
-import net.CTD.CTDmod.block.misc.AlchemyCauldron;
-import net.CTD.CTDmod.block.misc.SpiritStones;
-import net.CTD.CTDmod.core.MainCreativeTab;
+import net.ctd.ctdmod.CTDMod;
+import net.ctd.ctdmod.api.CTDCreativeTabIds;
+import net.ctd.ctdmod.block.CTDBaseBlock;
+import net.ctd.ctdmod.block.CTDBaseBlockItem;
+import net.ctd.ctdmod.block.misc.AlchemyCauldron;
+import net.ctd.ctdmod.block.misc.SpiritStones;
+import net.ctd.ctdmod.core.MainCreativeTab;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;

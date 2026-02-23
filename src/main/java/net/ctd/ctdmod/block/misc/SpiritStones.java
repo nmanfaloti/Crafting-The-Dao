@@ -1,4 +1,4 @@
-package net.CTD.CTDmod.block.misc;
+package net.ctd.ctdmod.block.misc;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
