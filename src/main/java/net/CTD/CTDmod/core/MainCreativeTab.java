@@ -32,22 +32,22 @@ public class MainCreativeTab {
             HashMultimap.create();
 
     // Main tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_TABS.register("main",
-            () -> CreativeModeTab.builder()
-                    .title(Component.translatable("creative_tab.tuto_tab"))
-                    .icon(() -> CTDItems.ELBABOSS.stack(1))
-                    .displayItems((params, output) -> MainCreativeTab.buildDisplayItems(MAIN_TAB_KEY, output))
-                    .build()
-    );
+//    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_TABS.register("main",
+//            () -> CreativeModeTab.builder()
+//                    .title(Component.translatable("creative_tab.tuto_tab"))
+//                    .icon(() -> CTDItems.ELBABOSS.stack(1))
+//                    .displayItems((params, output) -> MainCreativeTab.buildDisplayItems(MAIN_TAB_KEY, output))
+//                    .build()
+//    );
 
     // Alchemy tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ALCHEMY_TAB = CREATIVE_TABS.register("alchemy",
-            () -> CreativeModeTab.builder()
-                    .title(Component.translatable("creative_tab.alchemy_tab"))
-                    .icon(() -> CTDBlocks.ALCHEMY_CAULDRON.stack(1))
-                    .displayItems((params, output) -> MainCreativeTab.buildDisplayItems(ALCHEMY_TAB_KEY, output))
-                    .build()
-    );
+//    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ALCHEMY_TAB = CREATIVE_TABS.register("alchemy",
+//            () -> CreativeModeTab.builder()
+//                    .title(Component.translatable("creative_tab.alchemy_tab"))
+//                    .icon(() -> CTDBlocks.ALCHEMY_CAULDRON.stack(1))
+//                    .displayItems((params, output) -> MainCreativeTab.buildDisplayItems(ALCHEMY_TAB_KEY, output))
+//                    .build()
+//    );
 
     public static void add(ItemDefinition<?> itemDef) {
         itemDefs.add(itemDef);

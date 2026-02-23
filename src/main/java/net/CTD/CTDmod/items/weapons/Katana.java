@@ -5,8 +5,8 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.ToolMaterial;
 
 public class Katana extends SwordItem {
-    public Katana() {
+    public Katana(Item.Properties properties) {
         // NeoForge 1.21.4: Tier/Tiers remplacés par ToolMaterial ; dégâts 3, vitesse -2.4F
-        super(ToolMaterial.IRON, 3, -2.4F, new Item.Properties());
+        super(ToolMaterial.IRON, 3, -2.4F, properties);
     }
 }

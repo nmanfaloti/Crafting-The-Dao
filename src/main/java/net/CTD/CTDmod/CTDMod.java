@@ -1,5 +1,8 @@
 package net.CTD.CTDmod;
 
+import net.CTD.CTDmod.core.MainCreativeTab;
+import net.CTD.CTDmod.core.definition.CTDBlocks;
+import net.CTD.CTDmod.core.definition.CTDItems;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -44,12 +47,12 @@ public class CTDMod {
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
+    // Creates a new Block with the id "ctdmod:example_block", combining the namespace and path
     public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
+    // Creates a new BlockItem with the id "ctdmod:example_block", combining the namespace and path
     public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
 
-    // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
+    // Creates a new food item with the id "ctdmod:example_item", nutrition 1 and saturation 2
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
 
@@ -69,9 +72,9 @@ public class CTDMod {
         modEventBus.addListener(this::commonSetup);
 
 
-//        TUItems.DR.register(modEventBus);
-//        TUBlocks.DR.register(modEventBus);
-//        MainCreativeTab.CREATIVE_TABS.register(modEventBus);
+        CTDItems.DR.register(modEventBus);
+        CTDBlocks.DR.register(modEventBus);
+        MainCreativeTab.CREATIVE_TABS.register(modEventBus);
 
 
         // Register the Deferred Register to the mod event bus so blocks get registered

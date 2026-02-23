@@ -25,27 +25,26 @@ import java.util.function.Function;
 import static com.mojang.text2speech.Narrator.LOGGER;
 
 public class CTDItems {
-    public static final DeferredRegister<Item> DR = DeferredRegister.create(Registries.ITEM, CTDMod.MODID);
+    public static final DeferredRegister.Items DR = DeferredRegister.createItems(CTDMod.MODID);
 
     private static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
 
     //
-    // DEV ITEMS
+    // ITEMS
     //
 
     public static final ItemDefinition<Item> ELBABOSS = item(
             "elbaboss",
             ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "elbaboss"),
-            Elbaboss::new
+            properties -> new Elbaboss(properties)
     );
 
     public static final ItemDefinition<Item> KATANA = item(
             "katana",
             ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "katana"),
-            properties -> new Katana(),
+            properties -> new Katana(properties),
             CTDCreativeTabIds.ALCHEMY
     );
-
 
     //
     //
@@ -59,24 +58,23 @@ public class CTDItems {
     }
 
     static <T extends Item> ItemDefinition<T> item(String name, ResourceLocation id,
-            Function<Item.Properties, T> factory,
-            @Nullable ResourceKey<CreativeModeTab> group){
+                                                   Function<Item.Properties, T> factory,
+                                                   @Nullable ResourceKey<CreativeModeTab> group){
 
-        Preconditions.checkArgument(id.getNamespace().equals(CTDMod.MODID), "Can only register for TutoMod");
-        var definition = new ItemDefinition<>(name, DR.register(id.getPath(), () -> factory.apply(new Item.Properties())));
+        Preconditions.checkArgument(id.getNamespace().equals(CTDMod.MODID), "Namespace mismatch!");
+
+        var deferredItem = DR.registerItem(id.getPath(), factory);
+
+        var definition = new ItemDefinition<>(name, deferredItem);
+
         if (Objects.equals(group, CTDCreativeTabIds.MAIN)) {
-            LOGGER.info("Registering item {} in the main creative tab", name);
             MainCreativeTab.add(definition);
         } else if (group != null) {
-            LOGGER.info("Registering item {} in the creative tab {}", name, group.location());
+            MainCreativeTab.add(definition);
             MainCreativeTab.addExternal(group, definition);
         }
 
         ITEMS.add(definition);
-
-        ITEMS.forEach(item -> LOGGER.info("Key: {}, Value: {}", item.toString(), item));
-
         return definition;
     }
 }
-
