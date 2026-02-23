@@ -1,12 +1,22 @@
-package net.ctd.ctdmod.core.definition;
+package net.CTD.CTDmod.core.definition;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
-import net.ctd.ctdmod.CTDMod;
-import net.ctd.ctdmod.api.CTDCreativeTabIds;
-import net.ctd.ctdmod.block.CTDBaseBlock;
-import net.ctd.ctdmod.block.CTDBaseBlockItem;
-import net.ctd.ctdmod.block.misc.AlchemyCauldron;
-import net.ctd.ctdmod.core.MainCreativeTab;
+
+import net.CTD.CTDmod.CTDMod;
+import net.CTD.CTDmod.api.CTDCreativeTabIds;
+import net.CTD.CTDmod.block.CTDBaseBlock;
+import net.CTD.CTDmod.block.CTDBaseBlockItem;
+import net.CTD.CTDmod.block.misc.AlchemyCauldron;
+import net.CTD.CTDmod.block.misc.SpiritStones;
+import net.CTD.CTDmod.core.MainCreativeTab;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -16,13 +26,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredRegister;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class CTDBlocks {
     public static final DeferredRegister.Blocks DR = DeferredRegister.createBlocks(CTDMod.MODID);
@@ -36,13 +39,20 @@ public class CTDBlocks {
     // BLOCKS
     //
 
-    public static final BlockDefinition<AlchemyCauldron> ALCHEMY_CAULDRON = block(
+    public static final
+      BlockDefinition<AlchemyCauldron> ALCHEMY_CAULDRON = block(
             "alchemy_cauldron",
             ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "alchemy_cauldron"),
             props -> new AlchemyCauldron(props.noOcclusion().mapColor(MapColor.STONE)),
             CTDCreativeTabIds.ALCHEMY
     );
 
+    public static final BlockDefinition<SpiritStones> SPIRIT_STONES = block(
+            "spirit_stones",
+            ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "spirit_stones"),
+            props -> new SpiritStones(props.noOcclusion().mapColor(MapColor.STONE)),
+            CTDCreativeTabIds.ALCHEMY
+    );
     //
     //
     //
@@ -51,29 +61,45 @@ public class CTDBlocks {
         return Collections.unmodifiableList(BLOCKS);
     }
 
-
-    private static <T extends Block> BlockDefinition<T> block(String englishName, ResourceLocation id,  Function<Properties, T> blockSupplier){
+    private static <T extends Block> BlockDefinition<T> block(final String englishName, final ResourceLocation id,  final Function<Properties, T> blockSupplier){
         return block(englishName,id,blockSupplier, null, null);
     }
 
-    private static <T extends Block> BlockDefinition<T> block(String englishName, ResourceLocation id,  Function<Properties, T> blockSupplier, ResourceKey<CreativeModeTab> group){
+    private static <T extends Block> BlockDefinition<T> block(final String englishName, final ResourceLocation id,  final Function<Properties, T> blockSupplier, final ResourceKey<CreativeModeTab> group){
         return block(englishName,id,blockSupplier, null, group);
     }
 
+    /**
+    * Registers a new block and its corresponding item.
+    *
+    * <p>This method creates and registers a block through {@link net.neoforged.neoforge.registries.DeferredRegister},
+    * and automatically creates a matching {@link BlockItem}, unless a custom item factory is provided.</p>
+    *
+    * @param englishName   The readable English name of the block (for internal and localization use).
+    * @param id            The {@link ResourceLocation} identifying the block (must belong to this mod's namespace).
+    * @param blockSupplier A factory function that takes {@link Properties} and returns the block instance.
+    * @param itemFactory   (Optional) A factory to create a custom {@link BlockItem}. If {@code null}, a default item is used.
+    * @param group         (Optional) The creative mode tab where the block’s item will appear. If {@code null}, it is added to the main CTD tab.
+    * 
+    * @return A {@link BlockDefinition} object containing both the block and its registered item.
+    * 
+    * @throws IllegalArgumentException If the given {@code id} does not belong to this mod’s namespace.
+    * @throws IllegalStateException    If a non-null {@code itemFactory} returns a null item.
+    */
     private static <T extends Block> BlockDefinition<T> block(
-            String englishName,
-            ResourceLocation id,
-            Function<Properties, T> blockSupplier,
-            @Nullable BiFunction<Block, Item.Properties, BlockItem> itemFactory,
-            @Nullable ResourceKey<CreativeModeTab> group) {
-        Preconditions.checkArgument(id.getNamespace().equals(CTDMod.MODID), "Can only register for TutoMod");
+            final String englishName,
+            final ResourceLocation id,
+            final Function<Properties, T> blockSupplier,
+            @Nullable final BiFunction<Block, Item.Properties, BlockItem> itemFactory,
+            @Nullable final ResourceKey<CreativeModeTab> group) {
+        Preconditions.checkArgument(id.getNamespace().equals(CTDMod.MODID), "Can only register for CTDMod");
 
         // Enregistrement du bloc via NeoForge DeferredRegister
-        var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier);
-        var deferredItem = CTDItems.DR.registerItem(id.getPath(), (properties) -> {
-            var block = deferredBlock.get();
+        final var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier);
+        final var deferredItem = CTDItems.DR.registerItem(id.getPath(), (properties) -> {
+            final var block = deferredBlock.get();
             if (itemFactory != null) {
-                var item = itemFactory.apply(block, properties);
+                final var item = itemFactory.apply(block, properties);
                 if (item == null) {
                     throw new IllegalStateException("The item factory returned null for block " + id);
                 }
@@ -85,14 +111,14 @@ public class CTDBlocks {
             }
         });
 
-        var itemDef = new ItemDefinition<>(englishName, deferredItem);
+        final var itemDef = new ItemDefinition<>(englishName, deferredItem);
 
         if (group != null) {
             MainCreativeTab.addExternal(group, itemDef);
         } else {
             MainCreativeTab.add(itemDef);
         }
-        BlockDefinition<T> definition = new BlockDefinition<>(englishName, deferredBlock, itemDef);
+        final BlockDefinition<T> definition = new BlockDefinition<>(englishName, deferredBlock, itemDef);
 
         BLOCKS.add(definition);
 
