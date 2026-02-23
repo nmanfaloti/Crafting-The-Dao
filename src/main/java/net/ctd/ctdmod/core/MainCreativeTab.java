@@ -17,7 +17,11 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.core.registries.Registries;
 
-
+/**
+ * Registers and populates the mod's creative mode tabs (main tab and alchemy tab).
+ * Items are collected via {@link #add(ItemDefinition)} and {@link #addExternal(ResourceKey, ItemDefinition)}
+ * during block/item registration, then displayed in {@link #buildDisplayItems}.
+ */
 public class MainCreativeTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "ctdmod");
@@ -25,14 +29,14 @@ public class MainCreativeTab {
     public static final ResourceKey<CreativeModeTab> MAIN_TAB_KEY = CTDCreativeTabIds.MAIN;
     public static final ResourceKey<CreativeModeTab> ALCHEMY_TAB_KEY = CTDCreativeTabIds.ALCHEMY;
 
-    // Items for the main tab
+    /** Items to show in the main CTD creative tab. */
     public static final List<ItemDefinition<?>> itemDefs = new ArrayList<>();
 
-    // Items for external tabs (like vanilla ones)
+    /** Items to show in external tabs (e.g. alchemy tab), keyed by tab. */
     public static final Multimap<ResourceKey<CreativeModeTab>, ItemDefinition<?>> externalItemDefs =
             HashMultimap.create();
 
-    // Main tab
+    /** Main CTD creative tab. */
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = CREATIVE_TABS.register("main",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("creative_tab.ctd_tab"))
@@ -41,7 +45,7 @@ public class MainCreativeTab {
                     .build()
     );
 
-    // Alchemy tab
+    /** Alchemy creative tab. */
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ALCHEMY_TAB = CREATIVE_TABS.register("alchemy",
             () -> CreativeModeTab.builder()
                     .title(Component.translatable("creative_tab.alchemy_tab"))
@@ -50,14 +54,31 @@ public class MainCreativeTab {
                     .build()
     );
 
+    /**
+     * Adds an item to the main creative tab.
+     *
+     * @param itemDef the item definition to add
+     */
     public static void add(ItemDefinition<?> itemDef) {
         itemDefs.add(itemDef);
     }
 
+    /**
+     * Adds an item to an external tab (e.g. alchemy).
+     *
+     * @param tab     the creative tab key
+     * @param itemDef the item definition to add
+     */
     public static void addExternal(ResourceKey<CreativeModeTab> tab, ItemDefinition<?> itemDef) {
         externalItemDefs.put(tab, itemDef);
     }
 
+    /**
+     * Fills the given tab output with the items registered for that tab.
+     *
+     * @param currentTab the tab being built
+     * @param output     the creative tab output to accept items into
+     */
     public static void buildDisplayItems(ResourceKey<CreativeModeTab> currentTab, CreativeModeTab.Output output) {
         if (currentTab.equals(MAIN_TAB_KEY)) {
             for (var itemDef : itemDefs) {

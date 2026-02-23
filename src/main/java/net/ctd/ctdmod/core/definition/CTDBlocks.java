@@ -27,17 +27,20 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+/**
+ * Central registry for all custom blocks in the mod.
+ * <p>
+ * Blocks are registered via {@link #DR}; each block gets a corresponding {@link BlockItem} unless
+ * a custom item factory is provided. Use the private {@code block(...)} methods to register new blocks.
+ */
 public class CTDBlocks {
     public static final DeferredRegister.Blocks DR = DeferredRegister.createBlocks(CTDMod.MODID);
 
     public static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
 
-    // PROPERTIES
-
-
-    //
+    // -------------------------------------------------------------------------
     // BLOCKS
-    //
+    // -------------------------------------------------------------------------
 
     public static final
       BlockDefinition<AlchemyCauldron> ALCHEMY_CAULDRON = block(
@@ -53,20 +56,43 @@ public class CTDBlocks {
             props -> new SpiritStones(props.noOcclusion().mapColor(MapColor.STONE)),
             CTDCreativeTabIds.ALCHEMY
     );
-    //
-    //
-    //
 
+    // -------------------------------------------------------------------------
+    // Registration API
+    // -------------------------------------------------------------------------
+
+    /**
+     * Returns an unmodifiable list of all registered block definitions.
+     *
+     * @return the list of {@link BlockDefinition}s
+     */
     public static List<BlockDefinition<?>> getBlocks(){
         return Collections.unmodifiableList(BLOCKS);
     }
 
+    /**
+     * Registers a block and its item with default item factory, no creative tab.
+     *
+     * @param englishName   The readable English name of the block.
+     * @param id            The {@link ResourceLocation} for the block (this mod's namespace).
+     * @param blockSupplier Factory for the block from {@link Properties}.
+     * @return A {@link BlockDefinition} for the block and its item.
+     */
     private static <T extends Block> BlockDefinition<T> block(final String englishName, final ResourceLocation id,  final Function<Properties, T> blockSupplier){
-        return block(englishName,id,blockSupplier, null, null);
+        return block(englishName, id, blockSupplier, null, null);
     }
 
+    /**
+     * Registers a block and its item with default item factory and optional creative tab.
+     *
+     * @param englishName   The readable English name of the block.
+     * @param id            The {@link ResourceLocation} for the block (this mod's namespace).
+     * @param blockSupplier Factory for the block from {@link Properties}.
+     * @param group         The creative tab for the block's item, or {@code null}.
+     * @return A {@link BlockDefinition} for the block and its item.
+     */
     private static <T extends Block> BlockDefinition<T> block(final String englishName, final ResourceLocation id,  final Function<Properties, T> blockSupplier, final ResourceKey<CreativeModeTab> group){
-        return block(englishName,id,blockSupplier, null, group);
+        return block(englishName, id, blockSupplier, null, group);
     }
 
     /**

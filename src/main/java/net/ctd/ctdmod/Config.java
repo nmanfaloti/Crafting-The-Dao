@@ -6,8 +6,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
+/**
+ * Common mod configuration. Options are defined via {@link ModConfigSpec} and loaded from the
+ * mod's config file (e.g. in the config folder). The spec is registered in {@link CTDMod}.
+ */
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
