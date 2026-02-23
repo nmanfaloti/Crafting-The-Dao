@@ -1,4 +1,4 @@
-package com.CTD.CTDmod;
+package net.CTD.CTDmod;
 
 import java.util.List;
 
