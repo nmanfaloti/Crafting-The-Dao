@@ -1,0 +1,10 @@
+{
+  "item.ctdmod.elbaboss": "Elbaboss",
+  "item.ctdmod.katana" : "Katana",
+  "item.ctdmod.alchemy_cauldron": "Alchemy Cauldron",
+
+  "block.ctdmod.alchemy_cauldron": "Alchemy Cauldron",
+
+  "creative_tab.ctd_tab": "Tuto Mod",
+  "creative_tab.alchemy_tab" : "Alchemy - Tuto Mod"
+}

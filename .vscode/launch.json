@@ -12,13 +12,13 @@
       "projectName": "Crafting-The-Dao",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/clientRunProgramArgs.txt"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dctdmod%%/home/lounol72/Projets/Java/Crafting-The-Dao/bin/main"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dctdmod%%C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}/run",
+      "cwd": "${workspaceFolder}\\run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -34,13 +34,13 @@
       "projectName": "Crafting-The-Dao",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/dataRunProgramArgs.txt"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\dataRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/dataRunVmArgs.txt",
-        "-Dfml.modFolders\u003dctdmod%%/home/lounol72/Projets/Java/Crafting-The-Dao/bin/main"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dctdmod%%C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}/run",
+      "cwd": "${workspaceFolder}\\run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -56,13 +56,13 @@
       "projectName": "Crafting-The-Dao",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/gameTestServerRunProgramArgs.txt"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\gameTestServerRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/gameTestServerRunVmArgs.txt",
-        "-Dfml.modFolders\u003dctdmod%%/home/lounol72/Projets/Java/Crafting-The-Dao/bin/main"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dctdmod%%C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}/run",
+      "cwd": "${workspaceFolder}\\run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
@@ -78,13 +78,13 @@
       "projectName": "Crafting-The-Dao",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/serverRunProgramArgs.txt"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@/home/lounol72/Projets/Java/Crafting-The-Dao/build/moddev/serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dctdmod%%/home/lounol72/Projets/Java/Crafting-The-Dao/bin/main"
+        "@C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dctdmod%%C:\\Users\\FLOWUP\\Desktop\\Crafting-The-Dao\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}/run",
+      "cwd": "${workspaceFolder}\\run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"
