@@ -11,6 +11,8 @@ import net.ctd.ctdmod.core.MainCreativeTab;
 import net.ctd.ctdmod.items.misc.Elbaboss;
 
 import net.ctd.ctdmod.items.weapons.Katana;
+import net.ctd.ctdmod.items.weapons.Triniter;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -47,6 +49,12 @@ public class CTDItems {
       "katana",
       ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "katana"),
       properties -> new Katana(properties),
+      CTDCreativeTabIds.ALCHEMY);
+  
+  public static final ItemDefinition<Item> TRINITER = item(
+      "triniter",
+      ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "triniter"),
+      properties -> new Triniter(properties),
       CTDCreativeTabIds.ALCHEMY);
 
   // -------------------------------------------------------------------------

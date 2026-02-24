@@ -3,6 +3,7 @@ package net.ctd.ctdmod;
 import net.ctd.ctdmod.core.MainCreativeTab;
 import net.ctd.ctdmod.core.definition.CTDBlocks;
 import net.ctd.ctdmod.core.definition.CTDItems;
+import net.ctd.ctdmod.technique.Dellaier;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -17,6 +18,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
  * Main mod class for Crafting The Dao (CTD).
@@ -64,5 +66,10 @@ public class CTDMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("CTD Mod server starting");
+    }
+
+    @SubscribeEvent
+    public void onServerTick(ServerTickEvent.Post event) {
+        Dellaier.tick();
     }
 }
