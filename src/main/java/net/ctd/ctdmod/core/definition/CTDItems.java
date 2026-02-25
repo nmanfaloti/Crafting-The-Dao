@@ -10,6 +10,7 @@ import net.ctd.ctdmod.api.CTDCreativeTabIds;
 import net.ctd.ctdmod.core.MainCreativeTab;
 import net.ctd.ctdmod.items.misc.Elbaboss;
 
+import net.ctd.ctdmod.items.ore.SpiritCrystal;
 import net.ctd.ctdmod.items.weapons.Katana;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +50,11 @@ public class CTDItems {
             CTDCreativeTabIds.ALCHEMY
     );
 
+    public static final ItemDefinition<Item> SPIRIT_CRYSTAL = item(
+            "spirit_crystal",
+            ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "spirit_crystal"),
+            properties -> new SpiritCrystal(properties)
+    );
     // -------------------------------------------------------------------------
     // Registration API
     // -------------------------------------------------------------------------

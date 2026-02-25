@@ -1,6 +1,9 @@
 package net.ctd.ctdmod;
 
+
+import net.ctd.ctdmod.blockentity.entity.alchemy.AlchemyCauldronRenderer;
 import net.ctd.ctdmod.core.MainCreativeTab;
+import net.ctd.ctdmod.core.definition.CTDBlockEntities;
 import net.ctd.ctdmod.core.definition.CTDBlocks;
 import net.ctd.ctdmod.core.definition.CTDItems;
 import org.slf4j.Logger;
@@ -9,12 +12,17 @@ import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
@@ -37,8 +45,14 @@ public class CTDMod {
         CTDItems.DR.register(modEventBus);
         CTDBlocks.DR.register(modEventBus);
         MainCreativeTab.CREATIVE_TABS.register(modEventBus);
+        CTDBlockEntities.DR.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
+
+        // Register client-side event listeners only on the client distribution
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener(CTDModClient::registerBER);
+        }
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -64,5 +78,16 @@ public class CTDMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("CTD Mod server starting");
+    }
+
+    public class CTDModClient {
+        public static void onClientSetup(FMLClientSetupEvent event) {
+            // Client-side setup code here 
+        }
+
+        // Cette méthode sera appelée par le Mod Event Bus
+        public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(CTDBlockEntities.ALCHEMY_CAULDRON.get(), AlchemyCauldronRenderer::new);
+        }
     }
 }
