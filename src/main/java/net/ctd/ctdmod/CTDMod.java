@@ -3,7 +3,7 @@ package net.ctd.ctdmod;
 import net.ctd.ctdmod.core.MainCreativeTab;
 import net.ctd.ctdmod.core.definition.CTDBlocks;
 import net.ctd.ctdmod.core.definition.CTDItems;
-import net.ctd.ctdmod.technique.Dellaier;
+import net.ctd.ctdmod.technique.DeferredBehaviorScheduler;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -70,6 +70,6 @@ public class CTDMod {
 
     @SubscribeEvent
     public void onServerTick(ServerTickEvent.Post event) {
-        Dellaier.tick();
+        DeferredBehaviorScheduler.tick();
     }
 }

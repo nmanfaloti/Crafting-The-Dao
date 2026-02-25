@@ -24,3 +24,6 @@ runs
 run-data
 
 repo
+gradlew
+.vscode/launch.json
+.vscode/excel-pq-symbols/excel-pq-symbols.json

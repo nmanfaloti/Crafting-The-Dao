@@ -1,0 +1,63 @@
+---
+config:
+  layout: elk
+---
+flowchart LR
+ subgraph C["CLIENT - clavier et envoi"]
+        C1["1. Joueur appuie sur une touche (M ou P)"]
+        C2["2. CTDClientInputHandler.onClientTick (consumeClick)"]
+        C3["3a. M => PacketDistributor.sendToServer (new MeditatePayload)"]
+        C4["3b. P => PacketDistributor.sendToServer (new PowerActionPayload)"]
+  end
+ subgraph N["COUCHE RESEAU - identification du message"]
+        N1["4a. MeditatePayload.type() ID: ctdmod:meditate"]
+        N2["4b. PowerActionPayload.type() ID: ctdmod:power_action"]
+        N3["5. CTDNetwork.registerPayloads playToServer(TYPE, CODEC, HANDLER)"]
+        N4["6. NeoForge route automatiquement ID recu -> handler associe"]
+  end
+ subgraph S["SERVEUR - handlers"]
+        S1["7a. handleMeditate(payload, context)"]
+        S2["7b. handlePowerAction(payload, context)"]
+        G1{"8. context.player est un ServerPlayer ?"}
+  end
+ subgraph A["LOGIQUE GAMEPLAY - execution autoritaire serveur"]
+        A1["9a. Meditation.trigger(serverPlayer) +Qi sur le serveur"]
+        A2["9b. Meditation.triggerPowerAction(serverPlayer) check Qi, cout Qi, rayon, casse blocs, degats mobs"]
+        A3["10. Monde serveur mis a jour => synchro vers client (pas de ghost blocks)"]
+        A4["Sinon: ignorer la requete"]
+  end
+    C1 --> C2
+    C2 --> C3 & C4
+    C3 --> N1
+    C4 --> N2
+    N1 --> N3
+    N2 --> N3
+    N3 --> N4
+    N4 --> S1 & S2
+    S1 --> G1
+    S2 --> G1
+    G1 -- Oui --> A1 & A2
+    G1 -- Non --> A4
+    A1 --> A3
+    A2 --> A3
+
+     C1:::client
+     C2:::client
+     C3:::client
+     C4:::client
+     N1:::network
+     N2:::network
+     N3:::network
+     N4:::network
+     S1:::server
+     S2:::server
+     G1:::guard
+     A1:::action
+     A2:::action
+     A3:::action
+     A4:::guard
+    classDef client fill:#1f2937,stroke:#60a5fa,color:#e5f3ff,stroke-width:1.5px
+    classDef network fill:#3f2a1d,stroke:#f59e0b,color:#fff7ed,stroke-width:1.5px
+    classDef server fill:#1f3b2f,stroke:#34d399,color:#ecfdf5,stroke-width:1.5px
+    classDef action fill:#3b1f4a,stroke:#c084fc,color:#f5f3ff,stroke-width:1.5px
+    classDef guard fill:#3b3b3b,stroke:#a3a3a3,color:#fafafa,stroke-dasharray: 4 3
