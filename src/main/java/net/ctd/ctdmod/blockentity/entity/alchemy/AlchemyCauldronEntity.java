@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.ctd.ctdmod.api.CTDInventoryBlock;
+import net.ctd.ctdmod.api.CTDSyncedBlockEntity;
 import net.ctd.ctdmod.core.definition.CTDBlockEntities;
 import net.ctd.ctdmod.core.definition.CTDRecipes;
 import net.ctd.ctdmod.customrecipe.AlchemyRecipe;
@@ -21,7 +22,6 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,7 +30,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 
 import com.mojang.serialization.Codec;
 
-public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBlock<ItemStack, ItemStackHandler>{
+public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBlock<ItemStack, ItemStackHandler>, CTDSyncedBlockEntity {
     public final ItemStackHandler inventory = new ItemStackHandler(9){
         /*
          * Set the stack limit for each slot.
