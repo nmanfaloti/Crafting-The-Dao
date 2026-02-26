@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.ctd.ctdmod.api.CTDInventoryBlock;
 import net.ctd.ctdmod.api.CTDSyncedBlockEntity;
+import net.ctd.ctdmod.blockentity.CTDCraftingBlockEntity;
 import net.ctd.ctdmod.core.definition.CTDBlockEntities;
 import net.ctd.ctdmod.core.definition.CTDRecipes;
 import net.ctd.ctdmod.customrecipe.AlchemyRecipe;
@@ -12,10 +13,7 @@ import net.ctd.ctdmod.customrecipe.FluidIngredient;
 import net.ctd.ctdmod.customrecipe.ItemIngredient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
@@ -24,13 +22,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import com.mojang.serialization.Codec;
-
-public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBlock<ItemStack, ItemStackHandler>, CTDSyncedBlockEntity {
+public class AlchemyCauldronEntity extends CTDCraftingBlockEntity<AlchemyRecipe> implements CTDInventoryBlock<ItemStack, ItemStackHandler>, CTDSyncedBlockEntity {
     public final ItemStackHandler inventory = new ItemStackHandler(9){
         /*
          * Set the stack limit for each slot.
@@ -50,22 +45,40 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
         }
     };
     private float rotation;
-    private AlchemyRecipe currentRecipe = null;
-    private int craftProgress = 0;
-
-
-    public static final DataComponentType<String> CURRENT_RECIPE = DataComponentType.<String>builder()
-        .persistent(Codec.STRING)
-        .networkSynchronized(ByteBufCodecs.STRING_UTF8)
-        .build();
-
-    public boolean isCrafting() {
-        return currentRecipe != null;
-    }
-
+    
     public AlchemyCauldronEntity(BlockPos pos, BlockState state) {
         super(CTDBlockEntities.ALCHEMY_CAULDRON.get(), pos, state);
     }
+
+    @Override
+    public void tick() {
+        tickCrafting(); // Use the crafting logic from the base class to handle crafting progress and completion
+    }
+
+    @Override
+    protected void performCraft(AlchemyRecipe recipe) {
+        List<ItemStack> ingredients = new ArrayList<>();
+        for (int i = 0; i < recipe.ingredients.size(); i++) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                ingredients.add(stack.copy());
+                inventory.setStackInSlot(i, ItemStack.EMPTY);
+            }
+        }
+
+        ItemStack resultStack = recipe.generateResult(ingredients, level);
+        if (resultStack == null && recipe.resultFactory.get() instanceof ItemStack factoryStack) {
+            resultStack = factoryStack.copy();
+        }
+
+        int emptySlot = getFirstEmptySlot();
+        if (emptySlot != -1 && resultStack != null) {
+            inventory.setStackInSlot(emptySlot, resultStack);
+        }
+
+        recipe.CraftEnded(this);
+    }
+
 
     // Make the item in the cauldron rotate for rendering
     public float getRenderingRotation() {
@@ -96,12 +109,15 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
         return -1;
     }
 
+    /*
+     * INVENTORY MANAGEMENT 
+     */
+
     public void clearContents() {
         for (int i = 0; i < inventory.getSlots(); i++) {
             inventory.setStackInSlot(i, ItemStack.EMPTY);
         }
-        craftProgress = 0;
-        currentRecipe = null;
+        resetCrafting();
     }
 
     public void addObject(ItemStack object, Player player){
@@ -120,10 +136,6 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
         }
     } 
 
-
-    /*
-     * INVENTORY MANAGEMENT 
-     */
     /**
      * Remove an object from the inventory and give it to the player if possible
      * @param slot
@@ -155,18 +167,20 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
             container.setItem(i, entity.inventory.getStackInSlot(i));
         }
         Containers.dropContents(entity.level, entity.worldPosition, container);
-        entity.craftProgress = 0;
-        entity.currentRecipe = null;
+        entity.resetCrafting();
     }
 
+    @Override
     public int getInventorySize() {
         return inventory.getSlots();
     }
 
+    @Override
     public ItemStack getObject(int slot) {
         return inventory.getStackInSlot(slot);
     }
 
+    @Override
     public ItemStackHandler getInventory() {
         return inventory;
     }
@@ -244,50 +258,7 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
         currentRecipe = null;
         craftProgress = 0;
     }
-
-       public void tick() {
-            if (currentRecipe != null) {
-                craftProgress++;
-
-                //Only execute the crafting logic on the server side when the crafting time is reached
-                if (!level.isClientSide() && craftProgress >= currentRecipe.craftTime) {
-                    
-                    List<ItemStack> ingredients = new ArrayList<>();
-                    // Consume the ingredients and save them
-                    for (int i = 0; i < currentRecipe.ingredients.size(); i++) {
-                        ItemStack stack = inventory.getStackInSlot(i);
-                        if (!stack.isEmpty()) {
-                            ingredients.add(stack.copy());
-                            inventory.setStackInSlot(i, ItemStack.EMPTY);
-                        }
-                    }
-
-                    // Give the result
-                    ItemStack resultStack = currentRecipe.generateResult(ingredients, level);
-                    // Security check 
-                    if (resultStack == null && currentRecipe.resultFactory.get() instanceof ItemStack factoryStack) {
-                        resultStack = factoryStack.copy();
-                    }
-
-                    // Put the result in the inventory if possible
-                    int emptySlot = getFirstEmptySlot();
-                    if (emptySlot != -1 && resultStack != null) {
-                        inventory.setStackInSlot(emptySlot, resultStack);
-                    }
-
-                    // Notify the recipe that the crafting has ended
-                    currentRecipe.CraftEnded(this);
-
-                    currentRecipe = null;
-                    craftProgress = 0;
-
-                    // Mark the block entity as changed to update the client and save the data
-                    this.setChanged(); 
-                }
-            }
-        }
-
-
+       
     /*
     * Save the inventory to NBT when the block entity is saved.
     */
@@ -295,53 +266,12 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("inventory", inventory.serializeNBT(registries));
-        tag.putInt("CraftProgress", craftProgress);
-        
-        //Stock the recipe name
-        if (currentRecipe != null) {
-            tag.putString("CurrentRecipe", currentRecipe.name);
-        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         inventory.deserializeNBT(registries, tag.getCompound("inventory"));
-        craftProgress = tag.getInt("CraftProgress"); // Load the crafting progress
-
-        // Load the current recipe based on the stored recipe name
-        if (tag.contains("CurrentRecipe")) {
-            String recipeName = tag.getString("CurrentRecipe");
-            this.currentRecipe = CTDRecipes.getAlchemyRecipeByName(recipeName);
-        } else {
-            this.currentRecipe = null;
-        }
-    }
-
-    // GETTERS AND SETTERS
-    public AlchemyRecipe getCurrentRecipe() {
-        return currentRecipe;
-    }
-
-    public int getCraftProgress() {
-        return craftProgress;
-    }
-
-    /*
-     * CLIENTS/SERVER SYNC LOGIC 
-     */
-
-    @Override
-    public void setChanged() {
-        super.setChanged();
-        if (this.level != null && !this.level.isClientSide) {
-            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), 3);
-        }
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-        this.loadAdditional(tag, registries);
     }
 
     /**
@@ -352,17 +282,15 @@ public class AlchemyCauldronEntity extends BlockEntity implements CTDInventoryBl
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = super.getUpdateTag(registries);
         tag.put("inventory", inventory.serializeNBT(registries));
-        tag.putInt("CraftProgress", craftProgress);
-        if (currentRecipe != null) {
-            tag.putString("CurrentRecipe", currentRecipe.name);
-        }
         return tag;
     }
 
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        // Send the block entity data to the client when it changes, this will call handleUpdateTag on the client side
-        return ClientboundBlockEntityDataPacket.create(this);
+    // GETTERS AND SETTERS
+    public AlchemyRecipe getCurrentRecipe() {
+        return currentRecipe;
     }
 
+    public int getCraftProgress() {
+        return craftProgress;
+    }
 }
