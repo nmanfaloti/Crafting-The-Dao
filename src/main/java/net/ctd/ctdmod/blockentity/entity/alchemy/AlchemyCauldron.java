@@ -11,8 +11,8 @@ import net.ctd.ctdmod.customrecipe.AlchemyRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -75,19 +75,17 @@ public class AlchemyCauldron extends BaseEntityBlock {
     
 
     @Override
-    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hitResult) {
-        
         if (level.getBlockEntity(pos) instanceof AlchemyCauldronEntity blockEntity) {
-            if (!stack.isEmpty()){
+            if (!stack.isEmpty()) {
                 blockEntity.addObject(stack, player);
-            }else{
+            } else {
                 blockEntity.removeObject(blockEntity.getLastNonEmptySlot(), player);
             }
-
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.FAIL;
     }
 
     /*
@@ -95,7 +93,6 @@ public class AlchemyCauldron extends BaseEntityBlock {
      */
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // Utilise l'helper standard pour s'assurer que le type correspond
         return createTickerHelper(type, CTDBlockEntities.ALCHEMY_CAULDRON.get(), 
             (lvl, pos, st, be) -> be.tick());
     }

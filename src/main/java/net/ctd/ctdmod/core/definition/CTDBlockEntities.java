@@ -53,12 +53,14 @@ public class CTDBlockEntities {
                         throw new RuntimeException("Failed to create block entity instance for " + englishName, e);
                     }
                 };
-                var type = new BlockEntityType<>(supplier,Set.of(blockDefinition.block()));
-                typeHolder.set(type); // Give it to the type holder so it can be used in the supplier
+                var type = BlockEntityType.Builder.of(supplier, blockDefinition.block()).build(null);
+                typeHolder.set(type);
 
                 return type;
             });
-            var result = new DeferredBlockEntityType<>(entityClass, deferredHolder);
+            @SuppressWarnings("unchecked")
+            var typedHolder = (DeferredHolder<BlockEntityType<?>, BlockEntityType<T>>) deferredHolder;
+            var result = new DeferredBlockEntityType<>(entityClass, typedHolder);
             BLOCK_ENTITY_TYPES.add(result);
             return result;
         }

@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import net.ctd.ctdmod.api.CTDSyncedBlockEntity;
 import net.ctd.ctdmod.core.definition.CTDRecipes;
-import net.ctd.ctdmod.customrecipe.AlchemyRecipe;
 import net.ctd.ctdmod.customrecipe.CTDBaseRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

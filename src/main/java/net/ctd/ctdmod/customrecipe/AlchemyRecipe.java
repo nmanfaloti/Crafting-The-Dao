@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -115,8 +114,7 @@ public class AlchemyRecipe extends CTDBaseRecipe implements AnimatedCraftingReci
         BlockPos pos = blockEntity.getBlockPos();
 
         if (level != null && !level.isClientSide()) {
-            LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
-            
+            LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
             if (lightning != null) {
                 lightning.moveTo(Vec3.atBottomCenterOf(pos));
                 level.addFreshEntity(lightning);

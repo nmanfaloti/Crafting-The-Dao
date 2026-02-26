@@ -25,7 +25,7 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 21 to end users in 1.21.4, so mods should target Java 21.
+// NeoForge 1.21.1 requires Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
@@ -33,8 +33,8 @@ neoForge {
     version = project.neo_version
 
     parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
+        // 1.21.1: Parchment mapping artifact may be unavailable; use official Mojang mappings.
+        enabled = false
     }
 
     // This line is optional. Access Transformers are automatically detected
@@ -147,6 +147,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
+            mod_authors            : mod_authors,
     ]
     inputs.properties replaceProperties
     expand replaceProperties
