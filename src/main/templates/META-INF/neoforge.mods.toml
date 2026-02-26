@@ -9,3 +9,18 @@ version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
 description='''CTD Mod - Crafting The Dao.'''
+
+# Dépendances requises : Photon (VFX) et LDLib2 (lib de Photon)
+[[dependencies]]
+modId="ldlib2"
+mandatory=true
+versionRange="[2.0.3,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies]]
+modId="photon"
+mandatory=true
+versionRange="[2.0.4,)"
+ordering="NONE"
+side="BOTH"
