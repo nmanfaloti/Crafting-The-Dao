@@ -80,28 +80,10 @@ public class AlchemyCauldron extends BaseEntityBlock {
         
         if (level.getBlockEntity(pos) instanceof AlchemyCauldronEntity blockEntity) {
             if (!stack.isEmpty()){
-                // Get the first empty slot 
-                int emptySlot = blockEntity.getFirstEmptySlot();
-                if (emptySlot != -1) { // Check if not full 
-                    blockEntity.inventory.setStackInSlot(emptySlot, stack.copy());
-                    stack.setCount(0);
-                    level.playSound(player, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0f, 1.0f);
-                }
+                blockEntity.addObject(stack, player);
             }else{
-                // Get the first non-empty slot
-                int firstSlot = blockEntity.getLastNonEmptySlot();
-                if (firstSlot != -1) { // Check if not empty
-                    ItemStack itemStack = blockEntity.inventory.getStackInSlot(firstSlot).copy();
-                    blockEntity.inventory.setStackInSlot(firstSlot, ItemStack.EMPTY);
-                    if (!player.getInventory().add(itemStack)) {
-                        player.drop(itemStack, false);
-                    }
-                    level.playSound(player, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0f, 1.0f);
-                }
+                blockEntity.removeObject(blockEntity.getLastNonEmptySlot(), player);
             }
-
-            // Check the recipe after adding or removing an item
-            blockEntity.checkRecipe(CTDRecipes.getRecipes(AlchemyRecipe.class));
 
             return InteractionResult.SUCCESS;
         }
@@ -109,16 +91,12 @@ public class AlchemyCauldron extends BaseEntityBlock {
     }
 
     /*
-     * Set the ticker for the block entity
+     * Set the ticker for the block entity 
      */
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return type == CTDBlockEntities.ALCHEMY_CAULDRON.get()
-            ? (lvl, pos, st, be) -> ((AlchemyCauldronEntity) be).tick()
-            : null;
+        // Utilise l'helper standard pour s'assurer que le type correspond
+        return createTickerHelper(type, CTDBlockEntities.ALCHEMY_CAULDRON.get(), 
+            (lvl, pos, st, be) -> be.tick());
     }
 }   
- 
-// 1 2 3 4 
-// 1 2 3
-// 1 2 3 5 

@@ -31,3 +31,6 @@ repo
 
 #vscode
 .vscode/
+
+.github/copilot-instructions.md
+copilot-instructions.md

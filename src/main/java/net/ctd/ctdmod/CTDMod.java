@@ -5,7 +5,10 @@ import net.ctd.ctdmod.blockentity.entity.alchemy.AlchemyCauldronRenderer;
 import net.ctd.ctdmod.core.MainCreativeTab;
 import net.ctd.ctdmod.core.definition.CTDBlockEntities;
 import net.ctd.ctdmod.core.definition.CTDBlocks;
+import net.ctd.ctdmod.core.definition.CTDDataComponents;
 import net.ctd.ctdmod.core.definition.CTDItems;
+import net.ctd.ctdmod.core.definition.CTDRecipes;
+
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -42,10 +45,12 @@ public class CTDMod {
     public CTDMod(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(this::commonSetup);
 
+        CTDDataComponents.DR.register(modEventBus);
         CTDItems.DR.register(modEventBus);
         CTDBlocks.DR.register(modEventBus);
         MainCreativeTab.CREATIVE_TABS.register(modEventBus);
         CTDBlockEntities.DR.register(modEventBus);
+
 
         NeoForge.EVENT_BUS.register(this);
 
@@ -68,6 +73,11 @@ public class CTDMod {
         }
         LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.get());
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
+
+        // Wait for neoforge to setup 
+        event.enqueueWork(() -> {
+            CTDRecipes.init();
+        });
     }
 
     /**
