@@ -22,12 +22,13 @@ public abstract class CTDCraftingBlockEntity<R extends CTDBaseRecipe> extends Bl
     protected int craftProgress = 0; // Progress of the current crafting operation, in ticks
 
     private final Class<R> recipeClass; // The class of the recipes this block entity can craft, used for recipe lookup
-
+    @SuppressWarnings("unchecked")
     public CTDCraftingBlockEntity(BlockEntityType<? extends CTDCraftingBlockEntity<?>> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
 
         // Use reflection to determine the actual class of the recipe type parameter
         // this allows us to use the same base class for different recipe types without having to hardcode the class in each subclass
+        
         this.recipeClass = (Class<R>) ((ParameterizedType) getClass()
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
