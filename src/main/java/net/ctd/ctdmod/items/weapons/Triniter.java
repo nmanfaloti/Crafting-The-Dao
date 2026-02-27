@@ -3,15 +3,17 @@ package net.ctd.ctdmod.items.weapons;
 import javax.annotation.Nonnull;
 
 import net.ctd.ctdmod.technique.DeferredBehaviorScheduler;
-import net.ctd.ctdmod.technique.Rayon;
-import net.ctd.ctdmod.technique.ComportementRayon;
+import net.ctd.ctdmod.technique.RaySelection;
+import net.ctd.ctdmod.technique.RayBehavior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.Mob;
@@ -26,23 +28,22 @@ public class Triniter extends SwordItem {
 
 
     public Triniter(Item.Properties properties) {
-        // NeoForge 1.21.4: Tier/Tiers remplacés par ToolMaterial ; dégâts 3, vitesse -2.4F
-        super(ToolMaterial.IRON, 3, -2.4F, properties);
+        super(Tiers.IRON, properties);
     }
 
     @Override
-    public InteractionResult use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level level, @Nonnull Player player, @Nonnull InteractionHand hand) {
 
         if (!level.isClientSide()) {
-            Rayon rayon = new Rayon(player, level, (double) RADIUS, (double) MAX_LENGTH);
-            List<BlockPos> blocsCibles = rayon.blocsDansRayonTrier();
-            List<Mob> mobsCibles = rayon.getMobsCibles();
+            RaySelection raySelection = new RaySelection(player, level, (double) RADIUS, (double) MAX_LENGTH);
+            List<BlockPos> targetBlocks = raySelection.getSortedBlocksInRay();
+            List<Mob> targetMobs = raySelection.getTargetMobs();
             
-            if (!blocsCibles.isEmpty() || !mobsCibles.isEmpty()) {
-                DeferredBehaviorScheduler.ajouter(new ComportementRayon(blocsCibles, mobsCibles, player, level));
+            if (!targetBlocks.isEmpty() || !targetMobs.isEmpty()) {
+                DeferredBehaviorScheduler.add(new RayBehavior(targetBlocks, targetMobs, player, level));
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, player.getItemInHand(hand));
     }
 }

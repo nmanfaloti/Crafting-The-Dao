@@ -141,7 +141,7 @@ public class CTDBlocks {
     Preconditions.checkArgument(id.getNamespace().equals(CTDMod.MODID), "Can only register for CTDMod");
 
     // Enregistrement du bloc via NeoForge DeferredRegister
-    final var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier);
+    final var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier, Properties.of());
     final var deferredItem = CTDItems.DR.registerItem(id.getPath(), (properties) -> {
       final var block = deferredBlock.get();
       if (itemFactory != null) {

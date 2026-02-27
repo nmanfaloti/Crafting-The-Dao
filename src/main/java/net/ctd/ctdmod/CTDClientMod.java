@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
  * Registers the config screen and client lifecycle handlers via {@link EventBusSubscriber}.
  */
 @Mod(value = CTDMod.MODID, dist = Dist.CLIENT)
-@EventBusSubscriber(modid = CTDMod.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = CTDMod.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class CTDClientMod {
     public CTDClientMod(ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);

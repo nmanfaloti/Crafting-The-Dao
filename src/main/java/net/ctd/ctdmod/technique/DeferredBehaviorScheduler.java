@@ -15,75 +15,77 @@ import java.util.List;
  * to process the queued behaviors.
  */
 public class DeferredBehaviorScheduler {
-    private static final List<ScheduledBehaviorEntry> jestionDellayer = new ArrayList<>();
+    private static final List<ScheduledBehaviorEntry> scheduledBehaviors = new ArrayList<>();
 
     private DeferredBehaviorScheduler() {}
 
-    public static void ajouter(DeferredBehavior comportement) {
-        jestionDellayer.add(new ScheduledBehaviorEntry(comportement));
+    public static void add(DeferredBehavior behavior) {
+        scheduledBehaviors.add(new ScheduledBehaviorEntry(behavior));
     }
 
-    public static boolean retirer(DeferredBehavior comportement) {
-        return jestionDellayer.removeIf(entree -> entree.comportement == comportement);
+    public static boolean remove(DeferredBehavior behavior) {
+        return scheduledBehaviors.removeIf(entry -> entry.behavior == behavior);
     }
 
-    public static List<DeferredBehavior> getJestionDellayer() {
-        List<DeferredBehavior> comportements = new ArrayList<>();
-        for (ScheduledBehaviorEntry entree : jestionDellayer) {
-            comportements.add(entree.comportement);
+    public static List<DeferredBehavior> getScheduledBehaviors() {
+        List<DeferredBehavior> behaviors = new ArrayList<>();
+        for (ScheduledBehaviorEntry entry : scheduledBehaviors) {
+            behaviors.add(entry.behavior);
         }
-        return Collections.unmodifiableList(comportements);
+        return Collections.unmodifiableList(behaviors);
     }
 
     public static void tick() {
-        Iterator<ScheduledBehaviorEntry> iterator = jestionDellayer.iterator();
+        Iterator<ScheduledBehaviorEntry> iterator = scheduledBehaviors.iterator();
 
         while (iterator.hasNext()) {
-            ScheduledBehaviorEntry entree = iterator.next();
-            if (entree.cyclesAvantExecution > 0) {
-                entree.cyclesAvantExecution--;
+            ScheduledBehaviorEntry entry = iterator.next();
+            if (entry.cyclesBeforeExecution > 0) {
+                entry.cyclesBeforeExecution--;
                 continue;
             }
 
-            int executionsCycle = Math.max(1, entree.comportement.nombreExecutionsParCycle());
-            for (int i = 0; i < executionsCycle; i++) {
-                entree.comportement.executer();
-                if (entree.elements.hasNext()) entree.elements.next();  // Minimal one time execution 
+            int executionsPerCycle = Math.max(1, entry.behavior.getExecutionsPerCycle());
+            for (int i = 0; i < executionsPerCycle; i++) {
+                entry.behavior.execute();
+                if (entry.elements.hasNext()) {
+                    entry.elements.next();
+                }
     
             }
 
-            if (!entree.elements.hasNext()) {
-                if (entree.comportement.reprogrammerApresExecution()) {
-                    entree.reinitialiser();
+            if (!entry.elements.hasNext()) {
+                if (entry.behavior.shouldRescheduleAfterExecution()) {
+                    entry.reinitialize();
                 } else {
                     iterator.remove();
                 }
             } else {
-                entree.cyclesAvantExecution = Math.max(0, entree.comportement.delaiEntreCycles());
+                entry.cyclesBeforeExecution = Math.max(0, entry.behavior.getDelayBetweenCycles());
             }
         }
     }
 
-    public static void vider() {
-        jestionDellayer.clear();
+    public static void clear() {
+        scheduledBehaviors.clear();
     }
 
     // Internal class to represent a scheduled behavior entry with its execution state
 
     private static final class ScheduledBehaviorEntry {
-        private final DeferredBehavior comportement;
+        private final DeferredBehavior behavior;
         private Iterator<?> elements;
-        private int cyclesAvantExecution;
+        private int cyclesBeforeExecution;
 
-        private ScheduledBehaviorEntry(DeferredBehavior comportement) {
-            this.comportement = comportement;
-            this.elements = comportement.getElements().iterator();
-            this.cyclesAvantExecution = Math.max(0, comportement.delaiEntreCycles());
+        private ScheduledBehaviorEntry(DeferredBehavior behavior) {
+            this.behavior = behavior;
+            this.elements = behavior.getElements().iterator();
+            this.cyclesBeforeExecution = Math.max(0, behavior.getDelayBetweenCycles());
         }
 
-        private void reinitialiser() {
-            this.elements = this.comportement.getElements().iterator();
-            this.cyclesAvantExecution = Math.max(0, this.comportement.delaiEntreCycles());
+        private void reinitialize() {
+            this.elements = this.behavior.getElements().iterator();
+            this.cyclesBeforeExecution = Math.max(0, this.behavior.getDelayBetweenCycles());
         }
     }
 }

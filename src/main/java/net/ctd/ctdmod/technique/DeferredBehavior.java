@@ -8,17 +8,17 @@ package net.ctd.ctdmod.technique;
  * PS: the implementing class must manage the storage of the element to process itself.
  */
 public interface DeferredBehavior {
-    void executer();
+    void execute();
 
-    int nombreExecutionsParCycle();
+    int getExecutionsPerCycle();
 
     Iterable<?> getElements();
 
-    default int delaiEntreCycles() {
+    default int getDelayBetweenCycles() {
         return 0;
     }
 
-    default boolean reprogrammerApresExecution() {
+    default boolean shouldRescheduleAfterExecution() {
         return false;
     }
 }
