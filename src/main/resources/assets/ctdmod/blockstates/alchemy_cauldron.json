@@ -1,7 +1,7 @@
 {
   "variants" : {
     "" : {
-      "model": "minecraft:block/cauldron"
+      "model": "ctdmod:block/alchemy_cauldron"
     }
   }
 }

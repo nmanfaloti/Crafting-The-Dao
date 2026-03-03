@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 
@@ -14,8 +17,9 @@ import net.ctd.ctdmod.CTDMod;
 import net.ctd.ctdmod.api.CTDCreativeTabIds;
 import net.ctd.ctdmod.block.CTDBaseBlock;
 import net.ctd.ctdmod.block.CTDBaseBlockItem;
-import net.ctd.ctdmod.block.misc.AlchemyCauldron;
 import net.ctd.ctdmod.block.misc.SpiritStones;
+import net.ctd.ctdmod.blockentity.entity.alchemy.AlchemyCauldron;
+import net.ctd.ctdmod.blockentity.entity.alchemy.AlchemyCauldronEntity;
 import net.ctd.ctdmod.core.MainCreativeTab;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +27,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -42,8 +47,7 @@ public class CTDBlocks {
     // BLOCKS
     // -------------------------------------------------------------------------
 
-    public static final
-      BlockDefinition<AlchemyCauldron> ALCHEMY_CAULDRON = block(
+    public static final BlockDefinition<AlchemyCauldron> ALCHEMY_CAULDRON = block(
             "alchemy_cauldron",
             ResourceLocation.fromNamespaceAndPath(CTDMod.MODID, "alchemy_cauldron"),
             props -> new AlchemyCauldron(props.noOcclusion().mapColor(MapColor.STONE)),
@@ -56,6 +60,10 @@ public class CTDBlocks {
             props -> new SpiritStones(props.noOcclusion().mapColor(MapColor.STONE)),
             CTDCreativeTabIds.ALCHEMY
     );
+
+    // -------------------------------------------------------------------------
+    // BLOCKS ENTITY TEST
+    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // Registration API
@@ -121,6 +129,7 @@ public class CTDBlocks {
         Preconditions.checkArgument(id.getNamespace().equals(CTDMod.MODID), "Can only register for CTDMod");
 
         // Enregistrement du bloc via NeoForge DeferredRegister
+        CTDMod.LOGGER.info("Registering block " + id + "path : " + id.getPath());
         final var deferredBlock = DR.registerBlock(id.getPath(), blockSupplier);
         final var deferredItem = CTDItems.DR.registerItem(id.getPath(), (properties) -> {
             final var block = deferredBlock.get();

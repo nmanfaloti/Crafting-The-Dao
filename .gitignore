@@ -1,3 +1,7 @@
+# Ignore VSCode launch config
+.vscode/launch.json
+# Ignore Gradle build file
+build.gradle
 # eclipse
 bin
 *.launch
@@ -24,3 +28,9 @@ runs
 run-data
 
 repo
+
+#vscode
+.vscode/
+
+.github/copilot-instructions.md
+copilot-instructions.md
