@@ -8,6 +8,8 @@ import net.ctd.ctdmod.core.definition.CTDBlocks;
 import net.ctd.ctdmod.core.definition.CTDDataComponents;
 import net.ctd.ctdmod.core.definition.CTDItems;
 import net.ctd.ctdmod.core.definition.CTDRecipes;
+import net.ctd.ctdmod.data.CTDAttachments;
+import net.ctd.ctdmod.meditation.MeditationServerHandler;
 
 import org.slf4j.Logger;
 
@@ -26,8 +28,11 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 /**
  * Main mod class for Crafting The Dao (CTD).
@@ -50,6 +55,7 @@ public class CTDMod {
         CTDBlocks.DR.register(modEventBus);
         MainCreativeTab.CREATIVE_TABS.register(modEventBus);
         CTDBlockEntities.DR.register(modEventBus);
+        CTDAttachments.DR.register(modEventBus);
 
 
         NeoForge.EVENT_BUS.register(this);
@@ -88,6 +94,20 @@ public class CTDMod {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("CTD Mod server starting");
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide()) {
+            MeditationServerHandler.tick(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (!event.getEntity().level().isClientSide()) {
+            MeditationServerHandler.remove(event.getEntity());
+        }
     }
 
     public class CTDModClient {
