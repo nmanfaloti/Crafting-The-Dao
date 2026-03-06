@@ -4,6 +4,7 @@ import net.ctd.ctdmod.data.CultivationSettings;
 import net.ctd.ctdmod.data.CultivationUtil;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Map;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class MeditationServerHandler {
 
+    /** Seuil horizontal uniquement (ignore l'axe Y / gravité). */
     private static final double MOVEMENT_THRESHOLD_SQ = 1.0E-6;
 
     private static final Map<UUID, MeditationState> STATE_BY_PLAYER = new ConcurrentHashMap<>();
@@ -46,7 +48,11 @@ public final class MeditationServerHandler {
             return;
         }
 
-        if (player.getDeltaMovement().lengthSqr() >= MOVEMENT_THRESHOLD_SQ) {
+        // Seul le mouvement horizontal compte ; l'axe Y est ignoré car la gravité
+        // applique en permanence un deltaMovement.y ≈ −0.0784, même au sol.
+        Vec3 dm = player.getDeltaMovement();
+        double horizontalSq = dm.x * dm.x + dm.z * dm.z;
+        if (horizontalSq >= MOVEMENT_THRESHOLD_SQ) {
             STATE_BY_PLAYER.put(player.getUUID(), new MeditationState(true, 0));
             return;
         }
