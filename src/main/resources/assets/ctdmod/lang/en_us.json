@@ -6,5 +6,8 @@
   "block.ctdmod.alchemy_cauldron": "Alchemy Cauldron",
 
   "creative_tab.ctd_tab": "CTD Mod",
-  "creative_tab.alchemy_tab" : "Alchemy - CTD Mod"
+  "creative_tab.alchemy_tab" : "Alchemy - CTD Mod",
+
+  "key.ctdmod.meditate": "Meditate",
+  "key.categories.ctdmod": "Crafting The Dao"
 }

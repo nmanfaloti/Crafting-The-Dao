@@ -1,0 +1,13 @@
+{
+  "item.ctdmod.elbaboss": "Elbaboss",
+  "item.ctdmod.katana": "Katana",
+  "item.ctdmod.alchemy_cauldron": "Chaudron d'alchimie",
+
+  "block.ctdmod.alchemy_cauldron": "Chaudron d'alchimie",
+
+  "creative_tab.ctd_tab": "CTD Mod",
+  "creative_tab.alchemy_tab": "Alchimie - CTD Mod",
+
+  "key.ctdmod.meditate": "Méditer",
+  "key.categories.ctdmod": "Crafting The Dao"
+}
