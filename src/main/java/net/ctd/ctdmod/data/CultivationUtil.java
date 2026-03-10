@@ -7,67 +7,76 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Méthodes utilitaires pour manipuler les données de cultivation d'un joueur côté serveur.
- * <p>
- * Toute modification déclenche automatiquement un paquet de synchronisation vers le(s) client(s) concernés.
+ *
+ * <p>Toute modification déclenche automatiquement un paquet de synchronisation vers le(s) client(s)
+ * concernés.
  */
 public final class CultivationUtil {
 
-    private CultivationUtil() {
-        // Classe utilitaire : pas d'instanciation.
+  private CultivationUtil() {
+    // Classe utilitaire : pas d'instanciation.
+  }
+
+  /**
+   * Modifie la quantité de Qi d'un joueur, applique la logique de montée de niveau avec seuil
+   * évolutif (maxQi augmente à chaque niveau atteint), puis synchronise l'état auprès du client
+   * ciblé.
+   *
+   * @param player joueur serveur concerné
+   * @param delta variation de Qi (positive ou négative)
+   */
+  public static void modifyQi(ServerPlayer player, float delta) {
+    CultivationData current = player.getData(CTDAttachments.CULTIVATION);
+
+    float qi = current.qi() + delta;
+    float maxQi = current.maxQi();
+    int level = current.level();
+
+    if (delta > 0.0F) {
+      // Montées de sous-niveau : barre pleine -> +1 niveau, maxQi *= facteur ; le Qi actuel est
+      // conservé.
+      while (qi >= maxQi && level < CultivationSettings.MAX_SUBLEVEL) {
+        level++;
+        maxQi *= CultivationSettings.QI_MAX_GROWTH_FACTOR;
+      }
     }
 
-    /**
-     * Modifie la quantité de Qi d'un joueur, applique la logique de montée de niveau
-     * avec seuil évolutif (maxQi augmente à chaque niveau atteint), puis synchronise
-     * l'état auprès du client ciblé.
-     *
-     * @param player joueur serveur concerné
-     * @param delta  variation de Qi (positive ou négative)
-     */
-    public static void modifyQi(ServerPlayer player, float delta) {
-        CultivationData current = player.getData(CTDAttachments.CULTIVATION);
+    // Clamp final pour s'assurer que le Qi reste dans [0, maxQi].
+    qi = Mth.clamp(qi, 0.0F, maxQi);
 
-        float qi = current.qi() + delta;
-        float maxQi = current.maxQi();
-        int level = current.level();
+    CultivationData updated = new CultivationData(qi, maxQi, level);
 
-        if (delta > 0.0F) {
-            // Montées de sous-niveau : barre pleine → +1 niveau, maxQi *= facteur ; le Qi actuel est conservé.
-            while (qi >= maxQi && level < CultivationSettings.MAX_SUBLEVEL) {
-                level++;
-                maxQi *= CultivationSettings.QI_MAX_GROWTH_FACTOR;
-            }
-        }
+    if (!updated.equals(current)) {
+      player.setData(CTDAttachments.CULTIVATION, updated);
 
-        // Clamp final pour s'assurer que le Qi reste dans [0, maxQi].
-        qi = Mth.clamp(qi, 0.0F, maxQi);
-
-        CultivationData updated = new CultivationData(qi, maxQi, level);
-
-        if (!updated.equals(current)) {
-            player.setData(CTDAttachments.CULTIVATION, updated);
-
-            PacketDistributor.sendToPlayer(
-                player,
-                new SyncCultivationPayload(updated.qi(), updated.maxQi(), updated.level())
-            );
-        }
+      PacketDistributor.sendToPlayer(
+          player, new SyncCultivationPayload(updated.qi(), updated.maxQi(), updated.level()));
     }
+  }
 
-    /**
-     * Réinitialise entièrement la cultivation d'un joueur à l'état par défaut,
-     * puis synchronise les données vers le client.
-     *
-     * @param player joueur serveur concerné
-     */
-    public static void resetCultivation(ServerPlayer player) {
-        CultivationData updated = CultivationData.DEFAULT;
-        player.setData(CTDAttachments.CULTIVATION, updated);
+  /**
+   * Synchronise les données de cultivation du serveur vers le client.
+   * À appeler au login pour que le HUD affiche immédiatement le bon niveau et Qi.
+   *
+   * @param player joueur serveur concerné
+   */
+  public static void syncCultivationToClient(ServerPlayer player) {
+    CultivationData data = player.getData(CTDAttachments.CULTIVATION);
+    PacketDistributor.sendToPlayer(
+        player, new SyncCultivationPayload(data.qi(), data.maxQi(), data.level()));
+  }
 
-        PacketDistributor.sendToPlayer(
-            player,
-            new SyncCultivationPayload(updated.qi(), updated.maxQi(), updated.level())
-        );
-    }
+  /**
+   * Réinitialise entièrement la cultivation d'un joueur à l'état par défaut, puis synchronise les
+   * données vers le client.
+   *
+   * @param player joueur serveur concerné
+   */
+  public static void resetCultivation(ServerPlayer player) {
+    CultivationData updated = CultivationData.DEFAULT;
+    player.setData(CTDAttachments.CULTIVATION, updated);
+
+    PacketDistributor.sendToPlayer(
+        player, new SyncCultivationPayload(updated.qi(), updated.maxQi(), updated.level()));
+  }
 }
-

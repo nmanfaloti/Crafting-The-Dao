@@ -9,6 +9,7 @@ import net.ctd.ctdmod.core.definition.CTDDataComponents;
 import net.ctd.ctdmod.core.definition.CTDItems;
 import net.ctd.ctdmod.core.definition.CTDRecipes;
 import net.ctd.ctdmod.data.CTDAttachments;
+import net.ctd.ctdmod.data.CultivationUtil;
 import net.ctd.ctdmod.meditation.MeditationServerHandler;
 
 import org.slf4j.Logger;
@@ -100,6 +101,13 @@ public class CTDMod {
     public void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide()) {
             MeditationServerHandler.tick(serverPlayer);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide()) {
+            CultivationUtil.syncCultivationToClient(serverPlayer);
         }
     }
 
