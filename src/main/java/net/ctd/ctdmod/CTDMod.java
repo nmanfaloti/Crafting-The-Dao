@@ -11,6 +11,7 @@ import net.ctd.ctdmod.core.definition.CTDRecipes;
 import net.ctd.ctdmod.data.CTDAttachments;
 import net.ctd.ctdmod.data.CultivationUtil;
 import net.ctd.ctdmod.meditation.MeditationServerHandler;
+import net.ctd.ctdmod.network.SyncMeditationStatePayload;
 
 import org.slf4j.Logger;
 
@@ -34,6 +35,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Main mod class for Crafting The Dao (CTD).
@@ -99,6 +102,9 @@ public class CTDMod {
 
     @SubscribeEvent
     public void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!MeditationServerHandler.hasAnyMeditators()) {
+            return;
+        }
         if (event.getEntity() instanceof ServerPlayer serverPlayer && !serverPlayer.level().isClientSide()) {
             MeditationServerHandler.tick(serverPlayer);
         }
@@ -115,6 +121,19 @@ public class CTDMod {
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (!event.getEntity().level().isClientSide()) {
             MeditationServerHandler.remove(event.getEntity());
+        }
+    }
+
+    /**
+     * Interrompt la méditation si le joueur prend des dégâts.
+     */
+    @SubscribeEvent
+    public void onLivingDamage(LivingDamageEvent.Post event) {
+        if (event.getEntity() instanceof ServerPlayer serverPlayer
+                && !serverPlayer.level().isClientSide()
+                && MeditationServerHandler.isMeditating(serverPlayer)) {
+            MeditationServerHandler.setMeditating(serverPlayer, false);
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncMeditationStatePayload(false));
         }
     }
 

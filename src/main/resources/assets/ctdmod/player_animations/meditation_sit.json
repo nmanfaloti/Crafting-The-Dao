@@ -1,0 +1,30 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "meditation_sit": {
+      "loop": true,
+      "animation_length": 1.0,
+      "bones": {
+        "head": {
+          "rotation": { "0.0": [15, 0, 0] }
+        },
+        "body": {
+          "rotation": { "0.0": [25, 0, 0] },
+          "position": { "0.0": { "vector": [0, -0.55, 0] } }
+        },
+        "leftArm": {
+          "rotation": { "0.0": [45, 0, -12] }
+        },
+        "rightArm": {
+          "rotation": { "0.0": [-45, 0, -12] }
+        },
+        "leftLeg": {
+          "rotation": { "0.0": [-88, 0, 35] }
+        },
+        "rightLeg": {
+          "rotation": { "0.0": [-88, 0, -35] }
+        }
+      }
+    }
+  }
+}

@@ -31,6 +31,12 @@ public final class CTDNetworking {
             SyncCultivationPayload.Handler::handle
         );
 
+        registrar.playToClient(
+            SyncMeditationStatePayload.TYPE,
+            SyncMeditationStatePayload.STREAM_CODEC,
+            SyncMeditationStatePayload.Handler::handle
+        );
+
         registrar.playToServer(
             MeditatePayload.TYPE,
             MeditatePayload.STREAM_CODEC,

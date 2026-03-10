@@ -9,6 +9,13 @@ public final class CTDClientState {
 
     private static volatile boolean meditating;
 
+    /**
+     * Dernier état de la touche de méditation connu (pour détecter les changements).
+     * Synchronisé avec le serveur via SyncMeditationStatePayload pour éviter que,
+     * après une interruption forcée (ex. dégâts), une nouvelle pression ne soit ignorée.
+     */
+    private static volatile boolean lastMeditateKeyState;
+
     private CTDClientState() {
     }
 
@@ -18,5 +25,21 @@ public final class CTDClientState {
 
     public static boolean isMeditating() {
         return meditating;
+    }
+
+    public static void setLastMeditateKeyState(boolean value) {
+        lastMeditateKeyState = value;
+    }
+
+    public static boolean getLastMeditateKeyState() {
+        return lastMeditateKeyState;
+    }
+
+    /**
+     * Synchronise meditating et lastMeditateKeyState en une seule opération (ex. SyncMeditationStatePayload).
+     */
+    public static void syncFromServer(boolean active) {
+        meditating = active;
+        lastMeditateKeyState = active;
     }
 }

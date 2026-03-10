@@ -30,6 +30,20 @@ public class Config {
             .comment("A list of items to log on common setup.")
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
 
+    // -------------------------------------------------------------------------
+    // Méditation (paramètres configurables)
+    // -------------------------------------------------------------------------
+
+    /** Qi accordé à chaque intervalle de méditation. */
+    public static final ModConfigSpec.DoubleValue MEDITATION_QI_GAIN = BUILDER
+            .comment("Qi granted per meditation interval (default: 5.0)")
+            .defineInRange("meditationQiGain", 5.0, 0.0, Double.MAX_VALUE);
+
+    /** Nombre de ticks entre deux gains de Qi en méditation (80 = 4 s à 20 TPS). */
+    public static final ModConfigSpec.IntValue MEDITATION_INTERVAL_TICKS = BUILDER
+            .comment("Ticks between each Qi gain while meditating (80 = 4 seconds at 20 TPS)")
+            .defineInRange("meditationIntervalTicks", 80, 1, Integer.MAX_VALUE);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {
